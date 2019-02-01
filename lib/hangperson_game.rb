@@ -5,7 +5,8 @@ class HangpersonGame
 
   # Get a word from remote "random word" service
 
-  MAX_GUESSES = 7
+#maximum number of guesses before losing
+  GUESS_LIMIT = 7
 
  
   attr_reader :word
@@ -29,19 +30,17 @@ class HangpersonGame
     update_word
   end
 
-def guess(letter)
-    raise ArgumentError, "Argument is not a letter" unless letter =~ /[a-zA-Z]/ 
-    raise RuntimeError, "Game has already ended" unless check_win_or_lose == :play
-    
+def guess(letter) 
+   
     guess = letter.downcase
 
     return false unless is_new_guess?(guess)
     
     if is_correct_guess?(guess)
-      register_correct_guess(guess)
-      update_word
+     register_correct_guess(guess)
+     update_word
     else
-      register_wrong_guess(guess)
+     register_wrong_guess(guess)
     end
     return true
   end
@@ -71,12 +70,13 @@ def register_wrong_guess(guess)
   end
 
 def reached_max_guesses?
-    @wrong_guess_count >= MAX_GUESSES
+    @wrong_guess_count >= GUESS_LIMIT
   end
 
  def update_word
     @word_with_guesses = ''
     @word.each_char do |letter|
+
       if @guesses.include?(letter)
         @word_with_guesses << letter
       else
@@ -94,8 +94,6 @@ def guessed_complete_word?
       :lose
     elsif guessed_complete_word?
       :win
-    else
-      :play
     end
   end
 
